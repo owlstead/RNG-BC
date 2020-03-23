@@ -1,3 +1,9 @@
+
+<script type="text/javascript" charset="utf-8" src="
+https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
+https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
+
+
 The Optimized Simple Discard method
 ===
 
@@ -9,7 +15,7 @@ Date: 2020-03-23 (release candidate)
 Excerpt
 ---
 
-This document provides a specification and analysis of a random number generator called RNG-BC which uses a scheme called the Optimized Simple Discard Method. RNG-BC is an acronym for Random Number Generator using Binary Compare. We will also introduce a derived random number generator RNG-BC-$z$. These generators can be used for generating random numbers in in a range $[0..N)$. These random number generators will use a scheme we will call the Optimized Simple Discard Method, after the Simple Discard Method standardized in NIST SP 800-90A Rev 1 [1].
+This document provides a specification and analysis of a random number generator called RNG-BC which uses a scheme called the Optimized Simple Discard Method. RNG-BC is an acronym for Random Number Generator using Binary Compare. We will also introduce a derived random number generator RNG-BC-$z$. These generators can be used for generating random numbers in in a range $[0, N)$. These random number generators will use a scheme we will call the Optimized Simple Discard Method, after the Simple Discard Method standardized in NIST SP 800-90A Rev 1 [1].
 
 First we prove by reduction to the Simple Discard Method that the implementation is not biased. Secondly we show that the Optimized method is highly efficient with regards to usage of the underlying RBG. We also show that a minimum of calculations is required to implement the algorithm.
 
@@ -40,7 +46,7 @@ The random number generator function is called RNG-BC which stands for Random Nu
 The Simple Discard method
 ---
 
-The simplest method of generating a random value in this range is to generate a candidate value $c$ in the range $[0..2^m)$ where $m$ is the minimum number of bits required to encode $r$ [define r]. Mathematically $m$ is identical to $\big\lceil\log_2(N)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted. The Simple Discard Method has been standardized by NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
+The simplest method of generating a random value in this range is to generate a candidate value $c$ in the range $[0,2^m)$ where $m$ is the minimum number of bits required to encode $r$ [define r]. Mathematically $m$ is identical to $\big\lceil\log_2(N)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted. The Simple Discard Method has been standardized by NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
 
 The Simple Modular method
 ---
@@ -107,7 +113,7 @@ Depending on the speed of the PRNG is may be more useful to group $z$ bits toget
 Skip for N is 2^x
 ---
 
-When a number is generated in the range $[0..N)$ where $N$ is an exponent of $2$, i.e. $N=2^x$ then it is useful to directly generate the random number using the DRBG. This optimization is also often used by regular implementations of the Simple Discard Method, usually for smaller values of $n$. This optimization is however not applicable to RSA-KEM or EC private key generation.  
+When a number is generated in the range $[0,N)$ where $N$ is an exponent of $2$, i.e. $N=2^x$ then it is useful to directly generate the random number using the DRBG. This optimization is also often used by regular implementations of the Simple Discard Method, usually for smaller values of $n$. This optimization is however not applicable to RSA-KEM or EC private key generation.  
 
 Subtraction instead of comparison
 ---
