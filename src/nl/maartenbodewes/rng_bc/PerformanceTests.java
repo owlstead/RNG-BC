@@ -25,9 +25,9 @@ public class PerformanceTests {
     private static final byte[] MAX_256_MINUS_ONE =
             fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
-    private static final byte[] BRAINPOOLP512R1_P =
-            fromHex("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330871"
-                    + "7D4D9B009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3");
+    private static final byte[] BRAINPOOLP512R1_Q =
+            fromHex("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330870"
+                    + "553E5C414CA92619418661197FAC10471DB1D381085DDADDB58796829CA90069");
 
     private static final byte[] MODULUS_4096 =
             fromHex("99a9312fd775c94d804827b6011c9fcc8180ad142adec24c772c24709db89eb6"
@@ -58,7 +58,7 @@ public class PerformanceTests {
         addPerformanceTest("Mid 256", MID_256);
         addPerformanceTest("Mid 256 + 1", MID_256_PLUS_ONE);
         addPerformanceTest("Max 256 - 1", MAX_256_MINUS_ONE);
-        addPerformanceTest("Brainpool P512r1", BRAINPOOLP512R1_P);
+        addPerformanceTest("Brainpool P512r1 Q", BRAINPOOLP512R1_Q);
         addPerformanceTest("Random modulus 4096", MODULUS_4096);
     }
 

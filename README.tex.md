@@ -186,89 +186,89 @@ Test results
 
 8000000000000000000000000000000000000000000000000000000000000000
 
-Simple Discard Method Java, avg bits: 511.585792 avg time 0.996000μs
-Simple Discard Method byte array, avg bits: 512.218368 avg time 0.937000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.831000μs
-RNG-BC-1, avg bits: 258.990135 avg time 0.589000μs
-RNG-BC-8, avg bits: 264.057368 avg time 0.948000μs
-Ignore: 14
+Simple Discard Method Java, avg bits: 511.886336 avg time 1.000000μs
+Simple Discard Method byte array, avg bits: 511.960064 avg time 0.910000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.836000μs
+RNG-BC-1, avg bits: 258.999684 avg time 0.569000μs
+RNG-BC-8, avg bits: 264.065944 avg time 0.922000μs
+Ignore: 213
 
  === Minimum 256 bit + 1 === 
 
 8000000000000000000000000000000000000000000000000000000000000001
 
-Simple Discard Method Java, avg bits: 511.357440 avg time 1.027000μs
-Simple Discard Method byte array, avg bits: 512.349440 avg time 0.941000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.856000μs
-RNG-BC-1, avg bits: 258.993455 avg time 0.565000μs
-RNG-BC-8, avg bits: 264.061944 avg time 0.956000μs
-Ignore: 58
+Simple Discard Method Java, avg bits: 511.775232 avg time 1.000000μs
+Simple Discard Method byte array, avg bits: 512.193792 avg time 0.904000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.859000μs
+RNG-BC-1, avg bits: 258.995740 avg time 0.561000μs
+RNG-BC-8, avg bits: 264.043960 avg time 0.942000μs
+Ignore: 229
 
  === Mid 256 bit - 1 === 
 
 BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
-Simple Discard Method Java, avg bits: 341.540608 avg time 0.677000μs
-Simple Discard Method byte array, avg bits: 341.365760 avg time 0.644000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.896000μs
-RNG-BC-1, avg bits: 256.666582 avg time 0.505000μs
-RNG-BC-8, avg bits: 258.667352 avg time 0.654000μs
-Ignore: 50
+Simple Discard Method Java, avg bits: 341.554688 avg time 0.645000μs
+Simple Discard Method byte array, avg bits: 341.273088 avg time 0.624000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.900000μs
+RNG-BC-1, avg bits: 256.662856 avg time 0.498000μs
+RNG-BC-8, avg bits: 258.667016 avg time 0.648000μs
+Ignore: 210
 
  === Mid 256 === 
 
 C000000000000000000000000000000000000000000000000000000000000000
 
-Simple Discard Method Java, avg bits: 341.157120 avg time 0.674000μs
-Simple Discard Method byte array, avg bits: 341.605376 avg time 0.642000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.841000μs
-RNG-BC-1, avg bits: 257.335601 avg time 0.518000μs
-RNG-BC-8, avg bits: 258.704960 avg time 0.653000μs
-Ignore: 61
+Simple Discard Method Java, avg bits: 341.507840 avg time 0.649000μs
+Simple Discard Method byte array, avg bits: 341.479424 avg time 0.630000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.854000μs
+RNG-BC-1, avg bits: 257.330163 avg time 0.518000μs
+RNG-BC-8, avg bits: 258.712184 avg time 0.651000μs
+Ignore: 19
 
  === Mid 256 + 1 === 
 
 C000000000000000000000000000000000000000000000000000000000000001
 
-Simple Discard Method Java, avg bits: 341.302272 avg time 0.673000μs
-Simple Discard Method byte array, avg bits: 341.072384 avg time 0.643000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.861000μs
-RNG-BC-1, avg bits: 257.331965 avg time 0.518000μs
-RNG-BC-8, avg bits: 258.705736 avg time 0.654000μs
-Ignore: 247
+Simple Discard Method Java, avg bits: 341.321728 avg time 0.650000μs
+Simple Discard Method byte array, avg bits: 341.316096 avg time 0.627000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.864000μs
+RNG-BC-1, avg bits: 257.335282 avg time 0.517000μs
+RNG-BC-8, avg bits: 258.712392 avg time 0.651000μs
+Ignore: 6
 
  === Max 256 - 1 === 
 
 FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF
 
-Simple Discard Method Java, avg bits: 256.000000 avg time 0.504000μs
-Simple Discard Method byte array, avg bits: 256.000000 avg time 0.495000μs
-Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.863000μs
-RNG-BC-1, avg bits: 256.000000 avg time 0.485000μs
-RNG-BC-8, avg bits: 256.000000 avg time 0.507000μs
-Ignore: 230
+Simple Discard Method Java, avg bits: 256.000000 avg time 0.483000μs
+Simple Discard Method byte array, avg bits: 256.000000 avg time 0.485000μs
+Simple Modular Method BigInteger, avg bits: 384.000000 avg time 0.872000μs
+RNG-BC-1, avg bits: 256.000000 avg time 0.479000μs
+RNG-BC-8, avg bits: 256.000000 avg time 0.490000μs
+Ignore: 237
 
- === Brainpool P512r1 === 
+ === Brainpool P512r1 Q === 
 
-AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA703308717D4D9B009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3
+AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330870553E5C414CA92619418661197FAC10471DB1D381085DDADDB58796829CA90069
 
-Simple Discard Method Java, avg bits: 767.660544 avg time 0.980000μs
-Simple Discard Method byte array, avg bits: 766.079488 avg time 0.897000μs
-Simple Modular Method BigInteger, avg bits: 640.000000 avg time 1.387000μs
-RNG-BC-1, avg bits: 513.321300 avg time 0.670000μs
-RNG-BC-8, avg bits: 515.990880 avg time 0.856000μs
-Ignore: 292
+Simple Discard Method Java, avg bits: 767.076864 avg time 0.977000μs
+Simple Discard Method byte array, avg bits: 767.051264 avg time 0.893000μs
+Simple Modular Method BigInteger, avg bits: 640.000000 avg time 1.368000μs
+RNG-BC-1, avg bits: 513.315474 avg time 0.649000μs
+RNG-BC-8, avg bits: 515.997576 avg time 0.859000μs
+Ignore: 255
 
  === Random modulus 4096 === 
 
 99A9312FD775C94D804827B6011C9FCC8180AD142ADEC24C772C24709DB89EB6FF4A7C8C876837920F8C49CF23FF8C9DA0D8E7FBB722E0D3E6671D39DEBD95079D56C57C0D9DB9D2CAD074BC57E22F8811BA163ECB3342F24CE97DF551BD3D9353796EFA7F5F9C9ED5EF98A7A0FF30D1E805FAA8EA8747A6AE3734CFD8046E56278D36AD2666C612270298FA87356DEDFFF13EAC082AB7D406510D367C6CA034DDB92C297B65A233B74BAAE3CA2165E3FE699DBCBE82B48831C52222F10FDBD29ACA5608616F09AD6FDD2BFE90ECB135F4976E93660714B2FCC0CD0A713723FF835229628480444E0DC75D3FD44AEE9465AC719C0A605E4F5917A91E09C0EBE23B08E467766D6329BB83443A17EAB39A310AAB8B59628F90F4B40B50F2AF6FF49C3307441FEAB0F0978177798123207B21AE8FD7A6CC5D307155843161EE4C54E3685BA402F5A2F155A52C4521B76ECA6E2B9D5362341E37B8CB4DCBF7BC9CAAFFBD31A62CE3240F5161F43598D0F8AE5FE418F4784F8DDD444BD314E73F8C870895BDE24388BB905E42AE80DE34885C6D64EDBAB2E852053B737BF85471D5DFED98BA878E806DE82AA762791DACEF47895D66378B6F94256A0D3E7E77026AAB58540246EB9952C8C54777FAA879026498C169835DF5866FE867734D21E9E921D6A6FCF64260D8B98F195D0585D445D611607008F7D15407FCC32C1A55F1F9A5
 
-Simple Discard Method Java, avg bits: 6829.109248 avg time 4.443000μs
-Simple Discard Method byte array, avg bits: 6827.999232 avg time 3.834000μs
-Simple Modular Method BigInteger, avg bits: 4224.000000 avg time 6.129000μs
-RNG-BC-1, avg bits: 4097.731496 avg time 2.616000μs
-RNG-BC-8, avg bits: 4101.349936 avg time 2.938000μs
-Ignore: 3685
+Simple Discard Method Java, avg bits: 6819.016704 avg time 4.067000μs
+Simple Discard Method byte array, avg bits: 6824.448000 avg time 3.583000μs
+Simple Modular Method BigInteger, avg bits: 4224.000000 avg time 5.918000μs
+RNG-BC-1, avg bits: 4097.730171 avg time 2.436000μs
+RNG-BC-8, avg bits: 4101.351224 avg time 2.774000μs
+Ignore: 181
 ```
 
 Test interpretation
