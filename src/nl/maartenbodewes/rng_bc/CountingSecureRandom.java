@@ -9,7 +9,7 @@ import java.security.SecureRandom;
  *
  * @author maartenb
  */
-final class CountingSecureRandom extends SecureRandom {
+final class CountingSecureRandom extends SecureRandom implements BitCounter {
 
 	private static final long serialVersionUID = 1L;
 	

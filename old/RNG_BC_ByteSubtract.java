@@ -2,16 +2,18 @@ package nl.maartenbodewes.rng_bc;
 
 /**
  * An implementation of RNG-BC-1 that implements the Optimized Simple Discard Method over bits.
- * This uses a simplified loop and XOR to find the first bit that is too high,
+ * This uses a simplified loop and byte subtraction to find the first bit that is too high,
  * simplifying the code and making it more efficient to boot.
+ * 
+ * Unfortunately it fails a the moment.
  * 
  * @author maartenb
  */
-public class RNG_BC implements RandomNumberGenerator {
+public class RNG_BC_ByteSubtract implements RandomNumberGenerator {
 
     private final RandomBitGenerator rbg;
 
-    public RNG_BC(RandomBitGenerator rbg) {
+    public RNG_BC_ByteSubtract(RandomBitGenerator rbg) {
         this.rbg = rbg;
     }
 
@@ -29,7 +31,7 @@ public class RNG_BC implements RandomNumberGenerator {
         int highByteMask = (highestOneBit << 1) - 1;
 
         // initially randomize all the bits
-        rbg.nextBytes(c);
+        rbg.nextBytes(c, c.length);
         c[0] &= highByteMask;
 
         // loop over all the bytes
@@ -48,7 +50,7 @@ public class RNG_BC implements RandomNumberGenerator {
             }
 
             if (diff == 0) {
-                if (i < r.length - 1) {
+                if (i < r.length) {
                     i++;
                 } else {
                     // all bits and bytes are equal so we need to start over
@@ -64,7 +66,7 @@ public class RNG_BC implements RandomNumberGenerator {
                 rbg.nextBytes(c, i);
             }
 
-            // and then the bits (using XOR to find the first bit that differs) 
+            // and then the bits
             int uncomparedBits = Integer.SIZE - (Integer.numberOfLeadingZeros(ri ^ ci) + 1);
             for (int bo = 7; bo >= uncomparedBits; bo--) {
                 int newBit = rbg.nextBit();
@@ -90,5 +92,53 @@ public class RNG_BC implements RandomNumberGenerator {
         int bitMask = newBit << bo;
         int xiWithNewBitSet = ciWithBitCleared | bitMask;
         return xiWithNewBitSet;
+    }
+    
+    public static void main(String[] args) {
+        for (int ri = 0; ri <  256; ri++) {
+            for (int ci = 0; ci < 256; ci++) {
+                
+                int resS;
+                
+                int diffS = ci - ri;
+                if (diffS < 0) {
+                    resS = 10;
+                } else if (diffS == 0) {
+                    resS = 9;
+                } else {
+                    // NOTE this works, subtraction doesn't
+                    resS = Integer.SIZE - (Integer.numberOfLeadingZeros(ri ^ ci) + 1);
+                }
+            
+                int res = 9;
+                for (int b = Byte.SIZE - 1; b >= 0; b--) {
+                    // mask out the bit to compare
+                    int mask = 1 << b;
+
+                    int rb = ri & mask;
+                    int cb = ci & mask;
+
+                    // subtract the bits
+                    int diff = cb - rb;
+
+                    // if c is lower the candidate is valid
+                    if (diff < 0) {
+                        res = 10;
+                        break;
+                    }
+                    
+                    if (diff > 0) {                        
+                        res = b;
+                        break;
+                    }
+
+                    // c is identical, so we proceed to compare the bits in the next byte
+                }
+                
+                if (resS != res) {
+                    System.out.printf("%s <> %s : %d & %d%n", Integer.toBinaryString(ri), Integer.toBinaryString(ci), resS, res);
+                }
+            }
+        }
     }
 }

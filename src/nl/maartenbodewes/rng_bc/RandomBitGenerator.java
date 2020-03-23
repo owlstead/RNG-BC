@@ -8,7 +8,7 @@ import java.security.SecureRandom;
  *  
  * @author maartenb
  */
-final class RandomBitGenerator {
+final class RandomBitGenerator implements BitCounter {
 
 	private final SecureRandom rng;
 	
@@ -51,6 +51,11 @@ final class RandomBitGenerator {
 	    rng.nextBytes(ba);
 	    bitCount += Byte.SIZE;
 		return ba[0];
+	}
+	
+	public void nextBytes(byte[] x) {
+	    rng.nextBytes(x);
+	    bitCount += x.length * Byte.SIZE;
 	}
 
 	public void nextBytes(byte[] x, int amount) {

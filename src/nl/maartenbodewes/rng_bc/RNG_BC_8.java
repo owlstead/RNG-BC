@@ -1,60 +1,66 @@
 package nl.maartenbodewes.rng_bc;
 
-import java.security.SecureRandom;
-
 /**
- * A fast implementation of RNG-BC-8 which directly uses {@link SecureRandom} rather than
- * {@link RandomNumberGenerator} to achieve a speedup.
+ * An implementation of RNG-BC-8 that implements the Optimized Simple Discard Method over bytes.
  * 
- * Currently only allows values that are encoded in 8 * x bytes.
- *  
  * @author maartenb
  */
 public class RNG_BC_8 implements RandomNumberGenerator {
 
-	private final SecureRandom rbg;
-    private final byte[][] buf = new byte[128 / 8][];
+	private final RandomBitGenerator rbg;
 	    
-    {
-        // initialize an array of correctly sized buffers
-    	for (int i = 0; i < buf.length; i++) {
-    		buf[i] = new byte[i + 1];
-    	}
-    }
-    
-    
-	public RNG_BC_8(SecureRandom rbg) {
+	public RNG_BC_8(RandomBitGenerator rbg) {
 		this.rbg = rbg;
 	}
 
 	@Override
-	public void next(byte[] r, byte[] x) {
-		if (x.length != r.length) {
+	public void next(byte[] r, byte[] c) {
+		if (c.length != r.length) {
 			throw new IllegalArgumentException();
 		}
 
-		rbg.nextBytes(x);
+        int highestOneBit = Integer.highestOneBit(Byte.toUnsignedInt(r[0]));
+        if (highestOneBit == 0) {
+            // we do not allow values that start with the most significant byte set to zero bits
+            throw new IllegalArgumentException();
+        }
 
-		int i = 0;
-		while (i < r.length) {
+        int highByteMask = (highestOneBit << 1) - 1;
+        
+        // initially randomize all the bits
+		rbg.nextBytes(c);
+        c[0] &= highByteMask;
+
+        // loop over all the bytes
+        int i = 0;
+        while (true) {
 			int ri = (r[i] & 0xFF);
-			int xi = (x[i] & 0xFF);
-			int diff = ri - xi;
+			int ci = (c[i] & 0xFF);
 
-			if (diff > 0) {
+            // if c is lower the candidate is valid
+			if (ci < ri) {
 				return;
 			}
 
-			if (diff == 0) {
-				i++;
+            // if c is higher then only regenerate the compared bytes
+			if (ci > ri) {
+				rbg.nextBytes(c, i + 1);
+                c[0] &= highByteMask;
+                
+                // continue the loop to restart
+				i = 0;
 				continue;
 			}
-
-			if (diff < 0) {
-				rbg.nextBytes(buf[i]);
-				System.arraycopy(buf[i], 0, x, 0, i + 1);
-				i = 0;
-			}
+			
+            // all bits and bytes are equal so we need to start over
+            if (i == r.length - 1) {
+                rbg.nextBytes(c);
+                c[0] &= highByteMask;
+                i = 0;
+                continue;
+            }
+            
+			i++;
 		}
 	}
 }

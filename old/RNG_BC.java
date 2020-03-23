@@ -2,8 +2,6 @@ package nl.maartenbodewes.rng_bc;
 
 /**
  * An implementation of RNG-BC-1 that implements the Optimized Simple Discard Method over bits.
- * This uses a simplified loop and XOR to find the first bit that is too high,
- * simplifying the code and making it more efficient to boot.
  * 
  * @author maartenb
  */
@@ -29,50 +27,65 @@ public class RNG_BC implements RandomNumberGenerator {
         int highByteMask = (highestOneBit << 1) - 1;
 
         // initially randomize all the bits
-        rbg.nextBytes(c);
+        rbg.nextBytes(c, c.length);
         c[0] &= highByteMask;
 
         // loop over all the bytes
         int i = 0;
-        while (true) {
+        OUTER: while (true) {
             // use positive integers for each byte
             int ri = (r[i] & 0xFF);
             int ci = (c[i] & 0xFF);
 
-            // subtract the bits
-            int diff = ci - ri;
+            for (int b = Byte.SIZE - 1; b >= 0; b--) {
+                // mask out the bit to compare
+                int mask = 1 << b;
 
-            // if c is lower the candidate is valid
-            if (diff < 0) {
-                return;
-            }
+                int rb = ri & mask;
+                int cb = ci & mask;
 
-            if (diff == 0) {
-                if (i < r.length - 1) {
-                    i++;
-                } else {
-                    // all bits and bytes are equal so we need to start over
-                    rbg.nextBytes(c);
-                    c[0] &= highByteMask;
-                    i = 0;
+                // subtract the bits
+                int diff = cb - rb;
+
+                // if c is lower the candidate is valid
+                if (diff < 0) {
+                    return;
                 }
+
+                // if c is higher then only regenerate the compared bits
+                if (diff > 0) {
+                    // efficiently generate the more significant bytes
+                    if (i != 0) {
+                        rbg.nextBytes(c, i);
+                    }
+                        
+                    // and then the bits
+                    for (int bo = 7; bo >= b; bo--) {
+                        int newBit = rbg.nextBit();
+                        ci = setBit(ci, bo, newBit);
+                    }
+                    c[i] = (byte) ci;
+                    
+                    c[0] &= highByteMask;
+                    
+                    // continue the outer loop to restart
+                    i = 0;
+                    continue OUTER;
+                }
+
+                // c is identical, so we proceed to compare the bits in the next byte
+            }
+            
+            // all bits and bytes are equal so we need to start over
+            if (i == r.length) {
+                rbg.nextBytes(c);
+                c[0] &= highByteMask;
+                i = 0;
                 continue;
             }
-                
-            // efficiently generate the more significant bytes
-            if (i != 0) {
-                rbg.nextBytes(c, i);
-            }
 
-            // and then the bits (using XOR to find the first bit that differs) 
-            int uncomparedBits = Integer.SIZE - (Integer.numberOfLeadingZeros(ri ^ ci) + 1);
-            for (int bo = 7; bo >= uncomparedBits; bo--) {
-                int newBit = rbg.nextBit();
-                ci = setBit(ci, bo, newBit);
-            }
-            c[i] = (byte) ci;
-            c[0] &= highByteMask;
-            i = 0;
+            // look at next byte, previous bytes in c are equal to those in r
+            i++;
         }
     }
 

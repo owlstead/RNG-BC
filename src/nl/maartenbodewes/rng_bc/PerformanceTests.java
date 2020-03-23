@@ -1,35 +1,36 @@
 package nl.maartenbodewes.rng_bc;
 
+import static nl.maartenbodewes.rng_bc.Util.fromHex;
+import static nl.maartenbodewes.rng_bc.Util.toHex;
+
 import java.math.BigInteger;
 import java.security.SecureRandom;
 import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
-import hex.Hex;
-
 public class PerformanceTests {
-    private static final byte[] MIN_256 = Hex
-            .decode("8000000000000000000000000000000000000000000000000000000000000000");
-    private static final byte[] MIN_256_PLUS_1 = Hex
-            .decode("8000000000000000000000000000000000000000000000000000000000000001");
+    private static final byte[] MIN_256 =
+            fromHex("8000000000000000000000000000000000000000000000000000000000000000");
+    private static final byte[] MIN_256_PLUS_1 =
+            fromHex("8000000000000000000000000000000000000000000000000000000000000001");
 
-    private static final byte[] MID_256_PLUS_ONE = Hex
-            .decode("C000000000000000000000000000000000000000000000000000000000000001");
-    private static final byte[] MID_256 = Hex
-            .decode("C000000000000000000000000000000000000000000000000000000000000000");
-    private static final byte[] MID_256_MINUS_ONE = Hex
-            .decode("BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    private static final byte[] MID_256_PLUS_ONE =
+            fromHex("C000000000000000000000000000000000000000000000000000000000000001");
+    private static final byte[] MID_256 =
+            fromHex("C000000000000000000000000000000000000000000000000000000000000000");
+    private static final byte[] MID_256_MINUS_ONE =
+            fromHex("BFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
-    private static final byte[] MAX_256_MINUS_ONE = Hex
-            .decode("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
+    private static final byte[] MAX_256_MINUS_ONE =
+            fromHex("FFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFFF");
 
-    private static final byte[] BRAINPOOLP512R1_P = Hex
-            .decode("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330871"
+    private static final byte[] BRAINPOOLP512R1_P =
+            fromHex("AADD9DB8DBE9C48B3FD4E6AE33C9FC07CB308DB3B3C9D20ED6639CCA70330871"
                     + "7D4D9B009BC66842AECDA12AE6A380E62881FF2F2D82C68528AA6056583A48F3");
 
-    private static final byte[] MODULUS_4096 = Hex
-            .decode("99a9312fd775c94d804827b6011c9fcc8180ad142adec24c772c24709db89eb6"
+    private static final byte[] MODULUS_4096 =
+            fromHex("99a9312fd775c94d804827b6011c9fcc8180ad142adec24c772c24709db89eb6"
                     + "ff4a7c8c876837920f8c49cf23ff8c9da0d8e7fbb722e0d3e6671d39debd9507"
                     + "9d56c57c0d9db9d2cad074bc57e22f8811ba163ecb3342f24ce97df551bd3d93"
                     + "53796efa7f5f9c9ed5ef98a7a0ff30d1e805faa8ea8747a6ae3734cfd8046e56"
@@ -75,8 +76,9 @@ public class PerformanceTests {
 
         // only used to make sure that JIT doesn't remove any loops
         int ignoreValueAggregator = 0;
-        CountingSecureRandom myRNG = new CountingSecureRandom(SecureRandom.getInstance("DRBG"));
-        myRNG.resetBitCount();
+        SecureRandom drbg = SecureRandom.getInstance("DRBG");
+        CountingSecureRandom countingRNG = new CountingSecureRandom(drbg);
+        RandomBitGenerator rbg = new RandomBitGenerator(drbg);
 
         // === warm up JIT loops
 
@@ -85,7 +87,7 @@ public class PerformanceTests {
             for (long i = 0; i < testSize; i++) {
                 BigInteger xbi;
                 do {
-                    xbi = new BigInteger(n.length * Byte.SIZE, myRNG);
+                    xbi = new BigInteger(n.length * Byte.SIZE, countingRNG);
                 } while (xbi.compareTo(nbi) >= 0);
                 ignoreValueAggregator ^= xbi.bitCount();
             }
@@ -93,7 +95,7 @@ public class PerformanceTests {
 
         // startup simple discard byte array
         {
-            RandomNumberGenerator rngbc = new RNG_BC_8(myRNG);
+            RandomNumberGenerator rngbc = new RNGSimpleDiscard(rbg);
             for (long i = 0; i < testSize; i++) {
                 // let's play fair and create the byte array in the loop
                 byte[] x = new byte[n.length];
@@ -107,7 +109,7 @@ public class PerformanceTests {
         {
             int bits = n.length * Byte.SIZE + SIMPLE_MODULAR_METHOD_ADDITIONAL_BITS;
             for (long i = 0; i < testSize; i++) {
-                BigInteger xxbi = new BigInteger(bits, myRNG);
+                BigInteger xxbi = new BigInteger(bits, countingRNG);
                 BigInteger xbi = xxbi.mod(nbi);
                 ignoreValueAggregator ^= xbi.bitCount();
             }
@@ -115,7 +117,7 @@ public class PerformanceTests {
 
         // startup RNG-BC
         {
-            RandomNumberGenerator rngbc = new RNG_BC_8(myRNG);
+            RandomNumberGenerator rngbc = new RNG_BC(rbg);
             for (long i = 0; i < testSize; i++) {
                 byte[] x = new byte[n.length];
                 rngbc.next(n, x);
@@ -126,7 +128,7 @@ public class PerformanceTests {
 
         // startup RNG-BC-8
         {
-            RandomNumberGenerator rngbc = new RNG_BC_8(myRNG);
+            RandomNumberGenerator rngbc = new RNG_BC_8(rbg);
             for (long i = 0; i < testSize; i++) {
                 // let's play fair and create the byte array in the loop
                 byte[] x = new byte[n.length];
@@ -142,29 +144,28 @@ public class PerformanceTests {
             n = PERFORMANCE_TESTS.get(valueName);
             nbi = Util.os2ip(n, n.length);
 
-            System.out.printf("%n === %s === %n%n%s%n%n", valueName, Hex.encode(n));
+            System.out.printf("%n === %s === %n%n%s%n%n", valueName, toHex(n));
 
             // test simple discard
             {
-                myRNG.resetBitCount();
+                countingRNG.resetBitCount();
                 long start = System.currentTimeMillis();
                 for (long i = 0; i < testSize; i++) {
                     BigInteger xbi;
                     do {
-                        xbi = new BigInteger(n.length * Byte.SIZE, myRNG);
+                        xbi = new BigInteger(n.length * Byte.SIZE, countingRNG);
                     } while (xbi.compareTo(nbi) > 0);
                     ignoreValueAggregator ^= xbi.bitCount();
                 }
                 long end = System.currentTimeMillis();
-                double avgBitCount = (double) myRNG.getBitCount() / testSize;
+                double avgBitCount = (double) countingRNG.getBitCount() / testSize;
                 double avgTimeNS = (double) (end - start) * 1000 / testSize;
                 System.out.printf("Simple Discard Method Java, avg bits: %f avg time %fμs%n", avgBitCount, avgTimeNS);
             }
 
             // test simple discard byte array
             {
-                myRNG.resetBitCount();
-                RandomBitGenerator rbg = new RandomBitGenerator(myRNG);
+                rbg.resetBitCount();
                 RandomNumberGenerator rngbc = new RNGSimpleDiscard(rbg);
 
                 long start = System.currentTimeMillis();
@@ -184,16 +185,16 @@ public class PerformanceTests {
 
             // test simple modular
             {
-                myRNG.resetBitCount();
+                countingRNG.resetBitCount();
                 long start = System.currentTimeMillis();
                 int bits = n.length * Byte.SIZE + SIMPLE_MODULAR_METHOD_ADDITIONAL_BITS;
                 for (long i = 0; i < testSize; i++) {
-                    BigInteger xxbi = new BigInteger(bits, myRNG);
+                    BigInteger xxbi = new BigInteger(bits, countingRNG);
                     BigInteger xbi = xxbi.mod(nbi);
                     ignoreValueAggregator ^= xbi.bitCount();
                 }
                 long end = System.currentTimeMillis();
-                double avgBitCount = (double) myRNG.getBitCount() / testSize;
+                double avgBitCount = (double) countingRNG.getBitCount() / testSize;
                 double avgTimeNS = (double) (end - start) * 1000 / testSize;
                 System.out.printf("Simple Modular Method BigInteger, avg bits: %f avg time %fμs%n", avgBitCount,
                         avgTimeNS);
@@ -201,8 +202,7 @@ public class PerformanceTests {
 
             // test RNG-BC
             {
-                myRNG.resetBitCount();
-                RandomBitGenerator rbg = new RandomBitGenerator(myRNG);
+                rbg.resetBitCount();
                 RandomNumberGenerator rngbc = new RNG_BC(rbg);
 
                 long start = System.currentTimeMillis();
@@ -218,11 +218,10 @@ public class PerformanceTests {
                 double avgTimeNS = (double) (end - start) * 1000 / testSize;
                 System.out.printf("RNG-BC-1, avg bits: %f avg time %fμs%n", avgBitCount, avgTimeNS);
             }
-
             // test RNG-BC-8
             {
-                myRNG.resetBitCount();
-                RandomNumberGenerator rngbc = new RNG_BC_8(myRNG);
+                rbg.resetBitCount();
+                RandomNumberGenerator rngbc = new RNG_BC_8(rbg);
                 long start = System.currentTimeMillis();
                 for (long i = 0; i < testSize; i++) {
                     // let's play fair and create the byte array in the loop
@@ -232,7 +231,7 @@ public class PerformanceTests {
                     ignoreValueAggregator ^= xbi.bitCount();
                 }
                 long end = System.currentTimeMillis();
-                double avgBitCount = (double) myRNG.getBitCount() / testSize;
+                double avgBitCount = (double) rbg.getBitCount() / testSize;
                 double avgTimeNS = (double) (end - start) * 1000 / testSize;
                 System.out.printf("RNG-BC-8, avg bits: %f avg time %fμs%n", avgBitCount, avgTimeNS);
             }
