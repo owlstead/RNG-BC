@@ -1,10 +1,3 @@
-<head>
-<title>The Optimized Simple Discard Method
-<script type="text/javascript" charset="utf-8" src="
-https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
-https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
-</head>
-
 The Optimized Simple Discard Method
 ===
 
