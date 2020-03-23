@@ -1,10 +1,11 @@
-
+<head>
+<title>The Optimized Simple Discard Method
 <script type="text/javascript" charset="utf-8" src="
 https://cdn.mathjax.org/mathjax/latest/MathJax.js?config=TeX-AMS-MML_HTMLorMML,
 https://vincenttam.github.io/javascripts/MathJaxLocal.js"></script>
+</head>
 
-
-The Optimized Simple Discard method
+The Optimized Simple Discard Method
 ===
 
 Author: Maarten Bodewes  
@@ -106,7 +107,7 @@ Variations
 RNG-BC-$z$
 ---
 
-R-RNG-BC-$z$ is a generalization of the Optimized Simple Discard method for different word sizes. If $z=m$ then RNG-BC-$z$ is identical to the Simple Discard Method and no optimization takes place. If $z = 1$ then RNG-BC-$z$ is identical to the Optimized Simple Discard method.
+RNG-BC-$z$ is a generalization of the Optimized Simple Discard method for different word sizes. If $z=m$ then RNG-BC-$z$ is identical to the Simple Discard Method and no optimization takes place. If $z = 1$ then RNG-BC-$z$ is identical to the Optimized Simple Discard method.
 
 Depending on the speed of the PRNG is may be more useful to group $z$ bits together to perform the comparison operation. This has the disadvantage that - on average - it will require more bits to be generated. However, generally computers are optimized to operate on bytes - i.e. $z = 8$ - or machine specific words. This means that RNG-BC-8 is likely to be faster than RNG-BC-1 on most systems.
 
