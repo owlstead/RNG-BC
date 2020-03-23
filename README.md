@@ -278,6 +278,8 @@ The RNG-BC-1 implementation uses the least amount of bits from the underlying im
 
 The two Simple Discard Methods will consume about the same amount of bits on average. It shows that the Simple Discard Method that compares bytes directly is slightly faster than the one that converts to `BigInteger` and then performs the comparison. For small values it may be faster than RNG-BC-1 or RNG-BC-8, but it loses ground for an <img src="/tex/89f2e0d2d24bcf44db73aab8fc03252c.svg?invert_in_darkmode&sanitize=true" align=middle width=7.87295519999999pt height=14.15524440000002pt/> larger than 256 bits.
 
+Note that the `RandomBitGenerator` caches some bits to be able to supply them to the RNG-BC-1. The fewer calls to the `SecureRandom` implementation will likely explain the advantage that it seems to have over RNG-BC-8. The code of RNG-BC-1 is otherwise slightly more complex, so it should be slower. 
+
 Conclusion
 ===
 
