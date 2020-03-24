@@ -106,25 +106,12 @@ The Optimal Simple Discard method is as vulnerable against side channel attacks 
 
 It may be easier to detect how many bits are identical once comparison fails for the Optimized Simple Discard method; the number of regenerated bits are a clear indication. As this only leaks information about the *rejected* bits of a candidate this is unlikely to provide any advantage to an adversary.
 
-Variations
+RNG-BC-Z
 ===
-
-RNG-BC-$z$
----
 
 RNG-BC-$z$ is a generalization of the Optimized Simple Discard method for different word sizes. If $z = m$ then RNG-BC-$z$ is identical to the Simple Discard Method and no optimization takes place. If $z = 1$ then RNG-BC-$z$ is identical to the Optimized Simple Discard method.
 
-Depending on the speed of the PRNG is may be more useful to group $z$ bits together to perform the comparison operation. This has the disadvantage that - on average - it will require more bits to be generated. However, generally computers are optimized to operate on bytes - i.e. $z = 8$ - or machine specific words. This means that RNG-BC-8 is likely to be faster than RNG-BC-1 on most systems. It also greatly simplifies the code and reduces the code size.
-
-Skip when r is 2^x
----
-
-When a number is generated in the range $[0,r)$ where $r$ is an exponent of $2$, i.e. $r=2^x$ then it is useful to directly generate the random number using the DRBG. This optimization is also often used by regular implementations of the Simple Discard Method, usually for smaller values of $n$. This optimization is however not applicable to RSA-KEM or EC private key generation.  
-
-Subtraction instead of comparison
----
-
-It is possible to find which bit makes the comparison fail by subtracting the word of the candidate random number from the word at the same position in $r$. This may however cause values of random bits to leak to a possible adversary, and it requires iterating over all the bits in both values. It is therefore not recommended to choose subtraction over comparison.
+Depending on the speed of the PRNG is may be more useful to group $z$ bits together to perform the comparison operation. This has the disadvantage that - on average - it will require more bits to be generated. However, generally computers are optimized to operate on bytes - i.e. $z = 8$ - or machine specific words. This means that RNG-BC-8 is likely to be faster than RNG-BC-1 on most systems. It does greatly simplify the code and reduces the code size.
 
 Performance tests
 ===
