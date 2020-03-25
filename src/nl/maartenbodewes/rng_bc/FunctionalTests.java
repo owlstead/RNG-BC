@@ -7,8 +7,19 @@ import java.security.SecureRandom;
 import java.util.HashSet;
 import java.util.Set;
 
+/**
+ * Testing class that tests if the implemented random number generators behave.
+ * 
+ * @author maartenb
+ */
 public class FunctionalTests {
 
+    /**
+     * No arguments required.
+     * 
+     * @param args ignored
+     * @throws Exception any exception not caught, none expected
+     */
     public static void main(String ... args) throws Exception {
 
         RandomBitGenerator rbg = new RandomBitGenerator(SecureRandom.getInstance("DRBG"));
@@ -21,6 +32,12 @@ public class FunctionalTests {
         test(rngBC);
     }
 
+    /**
+     * Tests if all the numbers are generated for value 0x0101, giving enough calls (0x101 ^ 2 calls in total).
+     * It also prints the average, which should be centered around 0x80. 
+     * 
+     * @param bc the random number generator to test
+     */
     private static void test(RandomNumberGenerator bc) {
         byte[] r = { 0x01, 0x01 };
         BigInteger ri = new BigInteger(1, r);

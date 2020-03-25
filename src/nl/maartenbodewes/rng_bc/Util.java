@@ -3,6 +3,17 @@ package nl.maartenbodewes.rng_bc;
 import java.math.BigInteger;
 
 final class Util {
+    /**
+     * Creates a {@link BigInteger} from a byte array of a specific size.
+     * 
+     * The size is given for the size of the array to be validated. Size could be a constant value for the caller.
+     * 
+     * Most significant bytes set to zero are allowed but won't affect the returned value.
+     * 
+     * @param data the byte array containing a unsigned big endian encoded value
+     * @param size the expected size of the byte array in bytes
+     * @return the array encoded as BigInteger
+     */
     public static BigInteger os2ip(final byte[] data, final int size) {
         if (data.length != size) {
             throw new IllegalArgumentException("Size of the octet string should be precisely " + size);

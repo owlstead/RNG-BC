@@ -13,7 +13,14 @@ public class RNG_BC implements RandomNumberGenerator {
         this.rbg = rbg;
     }
 
+    /**
+     *
+     * @param r r is the maximum within the range [0, r), this array remains unchanged
+     * @param c c is the selected candidate random number that is in the range [0, r), this array is overwritten
+     */
     public void next(byte[] r, byte[] c) {
+        // this code uses variable names taken from NIST SP 800-90A Rev. 1
+        
         if (c.length != r.length) {
             throw new IllegalArgumentException();
         }

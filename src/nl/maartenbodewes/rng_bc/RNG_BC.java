@@ -20,7 +20,7 @@ public class RNG_BC implements RandomNumberGenerator {
             throw new IllegalArgumentException();
         }
 
-        int highestOneBit = Integer.highestOneBit(Byte.toUnsignedInt(r[0]));
+        int highestOneBit = Integer.highestOneBit(r[0] & 0xFF);
         if (highestOneBit == 0) {
             // we do not allow values that start with the most significant byte set to zero bits
             throw new IllegalArgumentException();

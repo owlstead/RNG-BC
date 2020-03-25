@@ -16,6 +16,13 @@ final class CountingSecureRandom extends SecureRandom implements BitCounter {
 	private final SecureRandom parent;
 	private long bitCount = 0L;
 	
+	/**
+	 * Creates a counting secure random that keeps a count of the number of bits retrieved using one
+	 * of the overridden methods.
+	 * 
+	 * The bit count is only kept for the total of calls.
+	 * @param parent
+	 */
 	public CountingSecureRandom(SecureRandom parent) {
 		this.parent = parent;
 	}
@@ -32,10 +39,12 @@ final class CountingSecureRandom extends SecureRandom implements BitCounter {
 		return parent.nextInt();
 	}
 	
+	@Override
 	public long getBitCount() {
 		return bitCount;
 	}
 	
+	@Override
 	public void resetBitCount() {
 		this.bitCount = 0L;
 	}

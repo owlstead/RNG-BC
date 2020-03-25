@@ -9,6 +9,12 @@ import java.util.HashMap;
 import java.util.LinkedList;
 import java.util.List;
 
+/**
+ * Performs tests on a large set of random numbers to see how many bits and micro- / nano-seconds are used
+ * by the various implementations of random number generators.
+ * 
+ * @author maartenb
+ */
 public class PerformanceTests {
     private static final byte[] MIN_256 =
             fromHex("8000000000000000000000000000000000000000000000000000000000000000");
