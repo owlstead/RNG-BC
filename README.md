@@ -10,7 +10,7 @@ Date: 2020-03-23 (release candidate 2)
 Excerpt
 ---
 
-This document provides a specification and analysis of the Optimized Simple Discard Method. As the name implies the Optimized Simple Discard Method is an optimization of the Simple Discard Method that is specified by NIST in NIST SP 800-90A Rev 1. The Simple Discard Method is used to generate well distributed random numbers in a range $\left[0, r\right)$ given a well distributed random bit generator or DRBG. The Simple Discard Method is colloquially known as *rejection sampling*.  
+This document provides a specification and analysis of the Optimized Simple Discard Method. As the name implies the Optimized Simple Discard Method is an optimization of the Simple Discard Method that is specified by NIST in NIST SP 800-90A Rev 1. The Simple Discard Method is used to generate well distributed random numbers in a interval $\left[0, r\right)$ given a well distributed random bit generator or DRBG. The Simple Discard Method is colloquially known as *rejection sampling*.  
 
 The Optimized Simple Discard Method is implemented by an algorithm called $\text{RNG-BC}$. $\text{RNG-BC}$ is an acronym for Random Number Generator using Binary Compare. We will also introduce a derived random number generator $\text{RNG-BC-}z$, which operates on words with bit size $z$. For instance, $\text{RNG-BC-8}$ operates on bytes instead of bits.
 
@@ -24,36 +24,36 @@ This document follows the notation of NIST SP 800-90A Rev 1, Appendix A, section
 Terms:
 
  - $\text{RBG}$: Random Bit Generator
- - $\text{RNG}$: Random Number Generator (for a number in a specific range)
- - $r$: the amount of elements in the range $\left[0, r\right)$
+ - $\text{RNG}$: Random Number Generator (for a number in a specific interval)
+ - $r$: the amount of elements in the interval $\left[0, r\right)$
  - $n_i$: the bit value of the bit at position $i$ within $r$
  - $m$: the minimum number of bit required to encode $r$
  - $b_i$: the bit value of the bit at position $i$ within the candidate
- - $c$: a candidate value of $l$ bits in the range $\left[0, 2^m\right)$ in case of the (Optimized) Simple Discard Method
- - $a$: the final value in the range $\left[0, r\right)$
+ - $c$: a candidate value of $l$ bits in the interval $\left[0, 2^m\right)$ in case of the (Optimized) Simple Discard Method
+ - $a$: the final value in the interval $\left[0, r\right)$
  - $z$: the amount of bits to compare at the same time within the binary compare (in $\text{RNG-BC-}z$) 
- - $C$: a constant to add to the value to create a value in the range $[C, C + r)$ 
+ - $C$: a constant to add to the value to create a value in the interval $[C, C + r)$ 
 
 Numbers have a value $\sum\limits_{i=0}^{m-1} 2^i b_i$ where $b_0 \dots b_{m-1}$ is the little endian bit representation of the value.
 
 Introduction
 ---
 
-This document describes an efficient random number generator for number generation in a large range using a random bit generator. The result of the random number generation is a natural number $a$ in the range $\left[0, r\right)$.
+This document describes an efficient random number generator for number generation in a large interval using a random bit generator. The result of the random number generation is a natural number $a$ in the interval $\left[0, r\right)$.
 
-It is easy to generate a number in any range $\left[l, h\right)$ by setting $r' = h - l$ and generating $a'$ in range $\left[0, r'\right)$, finally adjusting the value $a = a' + l$. This kind of random number generation is required for cryptographic operations such as the generation of EC private keys or the generation of the master secret in RSA-KEM [3].
+It is easy to generate a number in any interval $\left[l, h\right)$ by setting $r' = h - l$ and generating $a'$ in interval $\left[0, r'\right)$, finally adjusting the value $a = a' + l$. This kind of random number generation is required for cryptographic operations such as the generation of EC private keys or the generation of the master secret in RSA-KEM [3].
 
 NIST has described three such methods in NIST SP 800-90A Rev 1. We will shortly introduce these before specifying the Optimized Simple Discard Method. 
 
 The Simple Discard method
 ---
 
-The simplest method of generating a random value in this range is to generate a candidate value $c$ in the range $\left[0,2^m\right)$ where $m$ is the minimum number of bits required to encode $r$. Mathematically $m$ is identical to $\big\lceil\log_2(r)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted; $a = c$. The Simple Discard Method has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
+The simplest method of generating a random value in this interval is to generate a candidate value $c$ in the interval $\left[0,2^m\right)$ where $m$ is the minimum number of bits required to encode $r$. Mathematically $m$ is identical to $\big\lceil\log_2(r)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted; $a = c$. The Simple Discard Method has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
 
 The Complex Discard Method
 ---
 
-The complex discard method will not be evaluated; it has been specified to generate many random numbers in a specific range and does not seem efficient for embedded systems if only due to the memory requirements of generating multiple random numbers at once. It has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.2 [1]. 
+The complex discard method will not be evaluated; it has been specified to generate many random numbers in a specific interval and does not seem efficient for embedded systems if only due to the memory requirements of generating multiple random numbers at once. It has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.2 [1]. 
 
 The Simple Modular method
 ---
@@ -156,7 +156,7 @@ All methods have been preceded by a warm up round to make sure that Java's just-
 
 All tests have been performed over one million generated random numbers.
 
-First the name of the size of the range $n$ is displayed, followed by the value of $r$ in hexadecimals.
+First the name of the size of the interval $n$ is displayed, followed by the value of $r$ in hexadecimals.
 Then the different methods for generating the numbers are displayed line by line with their results.
 
 "avg bits" is the average number of bits required to generate each of the million random numbers.
@@ -272,7 +272,7 @@ Conclusion
 
 Simply by combining the comparison and random number generation it is easy to significantly bring down the number of bits requested from the underlying Random Bit Generator. There are no apparent drawbacks, such as requiring division using large operands required by the Simple Modular Method or requiring memory beyond the storage of the value itself.
 
-The number of additional bits does not grow with the size of the range. This is different from the Simple Discard Method where the additional number of bits grows linearly with the range. That means that the Optimized Simple Discard method is relatively more effective when the range is large such as in RSA-KEM.
+The number of additional bits does not grow with the size of the interval. This is different from the Simple Discard Method where the additional number of bits grows linearly with the interval. That means that the Optimized Simple Discard method is relatively more effective when the interval is large such as in RSA-KEM.
 
 The Optimized Simple Discard Method can therefore be used at any place where one of the other methods are used. However, it will have the most impact when dealing with a relatively slow random number generator.
 
@@ -281,7 +281,7 @@ Next steps
 
 The following next steps should be considered:
 
- - The implementations of RNG_BC should be made compatible for a number range of any bit size (using masking); currently the implementation only allow for $r$ where $m \bmod 8 = 0$, i.e. the most significant bit of $r$ is the most significant bit of a byte.
+ - The implementations of RNG_BC should be made compatible for a number interval of any bit size (using masking); currently the implementation only allow for $r$ where $m \bmod 8 = 0$, i.e. the most significant bit of $r$ is the most significant bit of a byte.
  - A mathematical calculation should be performed to show that the test results are indeed expected and correct.
  - The maximum number of bits used should be shown to indicate that the Optimized Simple Discard Method is fares much better than the Simple Discard Method in scenarios where the many candidates need to be tested.
  
