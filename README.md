@@ -34,7 +34,7 @@ Terms:
  - $z$: the amount of bits to compare at the same time within the binary compare (in $\text{RNG-BC-}z$) 
  - $C$: a constant to add to the value to create a value in the range $[C, C + r)$ 
 
-Numbers have a value $\sum_{i=0}^{m-1} 2^i b_i$ where $b_0 \dots b_{m-1}$ is the little endian bit representation of the value.
+Numbers have a value $\sum\limits_{i=0}^{m-1} 2^i b_i$ where $b_0 \dots b_{m-1}$ is the little endian bit representation of the value.
 
 Introduction
 ---
