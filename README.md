@@ -10,9 +10,9 @@ Date: 2020-03-23 (release candidate 2)
 Excerpt
 ---
 
-This document provides a specification and analysis of the Optimized Simple Discard Method. As the name implies the Optimized Simple Discard Method is an optimization of the Simple Discard Method that is specified by NIST in NIST SP 800-90A Rev 1. The Simple Discard Method is used to generate well distributed random numbers in a range $[0, r)$ given a well distributed random bit generator or DRBG. The Simple Discard Method is colloquially known as *rejection sampling*.  
+This document provides a specification and analysis of the Optimized Simple Discard Method. As the name implies the Optimized Simple Discard Method is an optimization of the Simple Discard Method that is specified by NIST in NIST SP 800-90A Rev 1. The Simple Discard Method is used to generate well distributed random numbers in a range $\left[0, r\right)$ given a well distributed random bit generator or DRBG. The Simple Discard Method is colloquially known as *rejection sampling*.  
 
-The Optimized Simple Discard Method is implemented by an algorithm called RNG-BC. RNG-BC is an acronym for Random Number Generator using Binary Compare. We will also introduce a derived random number generator RNG-BC-$z$, which operates on words with bit size $z$. For instance, RNG-BC-8 operates on bytes instead of bits.
+The Optimized Simple Discard Method is implemented by an algorithm called $\text{RNG-BC}$. $\text{RNG-BC}$ is an acronym for Random Number Generator using Binary Compare. We will also introduce a derived random number generator $\text{RNG-BC-}z$, which operates on words with bit size $z$. For instance, $\text{RNG-BC-8}$ operates on bytes instead of bits.
 
 First we prove by reduction that the implementation is not biased. Secondly we show that the Optimized method is highly efficient with regards to usage of the underlying RBG by creating a performance analysis that shows the number of bits retrieved from the DRBG.
 
@@ -23,15 +23,15 @@ This document follows the notation of NIST SP 800-90A Rev 1, Appendix A, section
 
 Terms:
 
- - RBG: Random Bit Generator
- - RNG: Random Number Generator (for a number in a specific range)
- - $r$: the amount of elements in the range $[0, r)$
+ - $\text{RBG}$: Random Bit Generator
+ - $\text{RNG}$: Random Number Generator (for a number in a specific range)
+ - $r$: the amount of elements in the range $\left[0, r\right)$
  - $n_i$: the bit value of the bit at position $i$ within $r$
  - $m$: the minimum number of bit required to encode $r$
  - $b_i$: the bit value of the bit at position $i$ within the candidate
- - $c$: a candidate value of $l$ bits in the range $[0, 2^m)$ in case of the (Optimized) Simple Discard Method
- - $a$: the final value in the range $[0, r)$
- - $z$: the amount of bits to compare at the same time within the binary compare (in RNG-BC-$z$) 
+ - $c$: a candidate value of $l$ bits in the range $\left[0, 2^m\right)$ in case of the (Optimized) Simple Discard Method
+ - $a$: the final value in the range $\left[0, r\right)$
+ - $z$: the amount of bits to compare at the same time within the binary compare (in $\text{RNG-BC-}z$) 
  - $C$: a constant to add to the value to create a value in the range $[C, C + r)$ 
 
 Numbers have a value $\sum_{i=0}^{m-1} 2^i b_i$ where $b_0 \dots b_{m-1}$ is the little endian bit representation of the value.
@@ -39,16 +39,16 @@ Numbers have a value $\sum_{i=0}^{m-1} 2^i b_i$ where $b_0 \dots b_{m-1}$ is the
 Introduction
 ---
 
-This document describes an efficient random number generator for number generation in a large range using a random bit generator. The result of the random number generation is a natural number $a$ in the range $[0, r)$.
+This document describes an efficient random number generator for number generation in a large range using a random bit generator. The result of the random number generation is a natural number $a$ in the range $\left[0, r\right)$.
 
-It is easy to generate a number in any range $[l, h)$ by setting $r' = h - l$ and generating $a'$ in range $[0, r')$, finally adjusting the value $a = a' + l$. This kind of random number generation is required for cryptographic operations such as the generation of EC private keys or the generation of the master secret in RSA-KEM [3].
+It is easy to generate a number in any range $\left[l, h\right)$ by setting $r' = h - l$ and generating $a'$ in range $\left[0, r'\right)$, finally adjusting the value $a = a' + l$. This kind of random number generation is required for cryptographic operations such as the generation of EC private keys or the generation of the master secret in RSA-KEM [3].
 
 NIST has described three such methods in NIST SP 800-90A Rev 1. We will shortly introduce these before specifying the Optimized Simple Discard Method. 
 
 The Simple Discard method
 ---
 
-The simplest method of generating a random value in this range is to generate a candidate value $c$ in the range $[0,2^m)$ where $m$ is the minimum number of bits required to encode $r$. Mathematically $m$ is identical to $\big\lceil\log_2(r)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted; $a = c$. The Simple Discard Method has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
+The simplest method of generating a random value in this range is to generate a candidate value $c$ in the range $\left[0,2^m\right)$ where $m$ is the minimum number of bits required to encode $r$. Mathematically $m$ is identical to $\big\lceil\log_2(r)\big\rceil$. After generation value $c$ is compared with value $r$. If the value of $c$ is higher or equal then the value is discarded and regenerated. If the value of $c$ is lower then the value $c$ is accepted; $a = c$. The Simple Discard Method has been standardized in NIST SP 800-90A Rev 1, Appendix A, section A.5.1 [1].
 
 The Complex Discard Method
 ---
@@ -106,12 +106,12 @@ The Optimal Simple Discard method is as vulnerable against side channel attacks 
 
 It may be easier to detect how many bits are identical once comparison fails for the Optimized Simple Discard method; the number of regenerated bits are a clear indication. As this only leaks information about the *rejected* bits of a candidate this is unlikely to provide any advantage to an adversary.
 
-RNG-BC-Z
+RNG-BC-z
 ===
 
-RNG-BC-$z$ is a generalization of the Optimized Simple Discard method for different word sizes. If $z = m$ then RNG-BC-$z$ is identical to the Simple Discard Method and no optimization takes place. If $z = 1$ then RNG-BC-$z$ is identical to the Optimized Simple Discard method.
+$\text{RNG-BC-}z$ is a generalization of the Optimized Simple Discard method for different word sizes. If $z = m$ then $\text{RNG-BC-}z$ is identical to the Simple Discard Method and no optimization takes place. If $z = 1$ then $\text{RNG-BC-}z$ is identical to the Optimized Simple Discard method.
 
-Depending on the speed of the PRNG is may be more useful to group $z$ bits together to perform the comparison operation. This has the disadvantage that - on average - it will require more bits to be generated. However, generally computers are optimized to operate on bytes - i.e. $z = 8$ - or machine specific words. This means that RNG-BC-8 is likely to be faster than RNG-BC-1 on most systems. It does greatly simplify the code and reduces the code size.
+Depending on the speed of the RNG it may be more useful to group $z$ bits together to perform the comparison operation. This has the disadvantage that - on average - it will require more bits to be generated. However, generally computers are optimized to operate on bytes - i.e. $z = 8$ - or machine specific words. Using a larger value for $z$ does simplify the code and reduces the code size.
 
 Performance tests
 ===
@@ -124,8 +124,8 @@ The following tests are implemented:
  - Simple Discard Method Java - this is simply a call to the `BigInteger(int numBits, Random rnd)` constructor, followed by a comparison with the value of $r$;
  - Simple discard byte array - this is a re-implementation of the Simple Discard Method using a byte array, to make sure that the Java implementation performs as expected and to make sure that the performance comparison is fair;
  - Simple Modular Method BigInteger - the simple modular method with $s$ set to 128;
- - RNG-BC-1 - the most efficient 1 bit binary compare method that exactly generates as many bits as necessary for the Optimized Simple Discard Method;
- - RNG-BC-8 - the byte oriented implementation of RNG-BC, which generates and compared each byte separately;
+ - $\text{RNG-BC-1}$ - the most efficient 1 bit binary compare method that exactly generates as many bits as necessary for the Optimized Simple Discard Method;
+ - $\text{RNG-BC-1}$ - the byte oriented implementation of RNG-BC, which generates and compared each byte separately;
 
 Test setup
 ---
@@ -261,11 +261,11 @@ Ignore: 181
 Test interpretation
 ---
 
-The RNG-BC-1 implementation uses the least amount of bits from the underlying implementation. However, it requires special buffering techniques for it to retrieve bits instead of bytes from the underlying RBG. This slows down the implementation quite a bit, which means it is sometimes slower than the byte oriented RNG-BC-8. Note that it only uses about 0-3 additional bits over $m$, the number of bits in $r$. The RNG-BC-8 implementation is a close second when it comes to consuming bits.
+The $\text{RNG-BC-1}$ implementation uses the least amount of bits from the underlying implementation. However, it requires special buffering techniques for it to retrieve bits instead of bytes from the underlying RBG. This slows down the implementation quite a bit, which means it is sometimes slower than the byte oriented $\text{RNG-BC-8}$. Note that it only uses about 0-3 additional bits over $m$, the number of bits in $r$. The RNG-BC-8 implementation is a close second when it comes to consuming bits.
 
-The two Simple Discard Methods will consume about the same amount of bits on average. It shows that the Simple Discard Method that compares bytes directly is slightly faster than the one that converts to `BigInteger` and then performs the comparison. For small values it may be faster than RNG-BC-1 or RNG-BC-8, but it loses ground for an $r$ larger than 256 bits.
+The two Simple Discard Methods will consume about the same amount of bits on average. It shows that the Simple Discard Method that compares bytes directly is slightly faster than the one that converts to `BigInteger` and then performs the comparison. For small values it may be faster than $\text{RNG-BC-1}$ or $\text{RNG-BC-8}$, but it loses ground for an $r$ larger than 256 bits.
 
-Note that the `RandomBitGenerator` caches some bits to be able to supply them to the RNG-BC-1. The fewer calls to the `SecureRandom` implementation will likely explain the advantage that it seems to have over RNG-BC-8. The code of RNG-BC-1 is otherwise slightly more complex, so it should be slower. 
+Note that the `RandomBitGenerator` caches some bits to be able to supply them to the $\text{RNG-BC-1}$ The fewer calls to the `SecureRandom` implementation will likely explain the advantage that it seems to have over $\text{RNG-BC-8}$. The code of $\text{RNG-BC-1}$ is otherwise slightly more complex, so it should be slower. 
 
 Conclusion
 ===
