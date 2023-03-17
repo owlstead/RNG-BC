@@ -1,3 +1,5 @@
+**NOTE** Unfortunately the formula's in the text below are not readable if you use a dark background. Please use a light-theme read this text.
+
 The Optimized Simple Discard Method
 ===
 
